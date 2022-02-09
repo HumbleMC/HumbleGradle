@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+group 'cn.enaium.humblemc'
+version '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+def asmVersion = '9.2'
+
+dependencies {
+    implementation gradleApi()
+    implementation('commons-codec:commons-codec:1.15')
+    implementation('commons-io:commons-io:2.11.0')
+    implementation('com.google.code.gson:gson:2.8.9')
+    implementation("org.ow2.asm:asm:$asmVersion")
+    implementation("org.ow2.asm:asm-analysis:$asmVersion")
+    implementation("org.ow2.asm:asm-commons:$asmVersion")
+    implementation("org.ow2.asm:asm-tree:$asmVersion")
+    implementation("org.ow2.asm:asm-util:$asmVersion")
+}
+
+targetCompatibility = sourceCompatibility = JavaVersion.VERSION_1_8
+
+publishing {
+    repositories {
+        def ENV = System.getenv()
+        if (ENV.MAVEN_URL) {
+            maven {
+                url ENV.MAVEN_URL
+            }
+        }
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.name
+            version project.version
+            from components.java
+        }
+    }
+}
